@@ -7,13 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.room.Room
+import com.mexiti.costogasolina.navigation.NavManager
+import com.mexiti.costogasolina.room.GasolineDatabase
 import com.mexiti.costogasolina.ui.theme.CostoGasolinaTheme
-import com.mexiti.costogasolina.ui.views.AddView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val db = Room.databaseBuilder(
+            applicationContext,
+            GasolineDatabase::class.java,
+            "gasoline_db"
+        ).build()
+        val dao = db.gasolineDao()
 
 
         setContent {
@@ -23,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddView()
+                    NavManager(dao)
 
                 }
             }

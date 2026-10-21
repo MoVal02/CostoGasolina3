@@ -39,12 +39,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.mexiti.costogasolina.R
 import com.mexiti.costogasolina.domain.calcularMonto
 import com.mexiti.costogasolina.ui.components.AddOptionalData
 import com.mexiti.costogasolina.ui.components.EditNumberField
 import com.mexiti.costogasolina.ui.components.MainTitle
 import com.mexiti.costogasolina.ui.theme.CostoGasolinaTheme
+import com.mexiti.costogasolina.viewmodel.GasolineViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
@@ -53,11 +55,14 @@ import java.util.Locale
 
 @Composable
 fun AddView(
-
+    navController: NavController,
+    viewModel: GasolineViewModel,
     modifier: Modifier = Modifier
 ) {
     CostGasLayout(
+        navController,
         onSaveTransaction = { price, liters, tip, date, kilometers ->
+            viewModel.addTransaction(price, liters, tip, date, kilometers)
 
         },
         modifier = modifier
@@ -67,7 +72,8 @@ fun AddView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CostGasLayout(
-    onSaveTransaction: (Double,Double,Double,String,Double) -> Unit ,
+    navController: NavController,
+    onSaveTransaction: (Double,Double,Double,String,Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
     //Estado para gestionar el Snackbar temporal
@@ -83,7 +89,9 @@ fun CostGasLayout(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { /*TODO */ }) {
+                        onClick = {
+                            navController.popBackStack()
+                        }) {
                         // Icono de flecha de retroceso
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -107,7 +115,7 @@ fun CostGasLayout(
                scope.launch {
                    snackbarHostState.showSnackbar("✓ Registro guardado correctamente")
                    delay(800)
-                  /*TODO*/
+                  navController.popBackStack()
                }
            }
             ,
